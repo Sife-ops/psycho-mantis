@@ -1,0 +1,11 @@
+{
+  "name": "@psycho-mantis/lib",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {},
+  "dependencies": {
+    "ulid": "^2.3.0",
+    "electrodb": "^2.4.1",
+    "@aws-sdk/client-dynamodb": "^3.259.0"
+  }
+}

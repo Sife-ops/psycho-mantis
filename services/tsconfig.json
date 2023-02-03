@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["functions", "test"],
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "."
+  }
+}

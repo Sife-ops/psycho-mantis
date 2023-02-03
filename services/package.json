@@ -1,0 +1,17 @@
+{
+  "name": "@psycho-mantis/services",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {},
+  "dependencies": {
+    "aws-sdk": "^2.1308.0",
+    "@pothos/core": "^3.24.1",
+    "graphql": "^16.6.0",
+    "ulid": "^2.3.0",
+    "electrodb": "^2.4.1",
+    "@aws-sdk/client-dynamodb": "^3.264.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.110"
+  }
+}
