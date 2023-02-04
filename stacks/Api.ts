@@ -10,11 +10,12 @@ import {
 export function Api({ stack }: StackContext) {
   const db = use(Database);
   const botPublicKey = new Config.Secret(stack, "BOT_PUBLIC_KEY");
+  const botToken = new Config.Secret(stack, "BOT_TOKEN");
 
   const api = new ApiGateway(stack, "api", {
     defaults: {
       function: {
-        bind: [db.lobbyTable, db.userTable, botPublicKey],
+        bind: [db.lobbyTable, db.userTable, botPublicKey, botToken],
       },
     },
     routes: {

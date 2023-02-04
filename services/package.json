@@ -10,6 +10,7 @@
     "aws-sdk": "^2.1308.0",
     "electrodb": "^2.4.1",
     "graphql": "^16.6.0",
+    "node-fetch": "^3.3.0",
     "tweetnacl": "^1.0.3",
     "ulid": "^2.3.0",
     "zod": "^3.20.2"
