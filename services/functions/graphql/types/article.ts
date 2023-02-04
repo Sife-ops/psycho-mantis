@@ -10,11 +10,19 @@ import { builder } from "../builder";
 //     }),
 //   });
 
-const ArticleType = builder.objectRef<{
-  articleID: string;
-  title: string;
-  url: string;
-}>("Article");
+const ArticleType = builder
+  .objectRef<{
+    articleID: string;
+    title: string;
+    url: string;
+  }>("Article")
+  .implement({
+    fields: (t) => ({
+      id: t.exposeID("articleID"),
+      url: t.exposeString("url"),
+      title: t.exposeString("title"),
+    }),
+  });
 
 builder.queryFields((t) => ({
   article: t.field({

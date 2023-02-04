@@ -2,17 +2,17 @@ import { Configuration } from "../config";
 import { Entity, EntityItem } from "electrodb";
 import { ulid } from "ulid";
 
-export const GameEntity = new Entity(
+export const PlayerEntity = new Entity(
   {
     indexes: {
-      channel: {
+      player: {
         pk: {
           field: "pk",
-          composite: ["channelId"],
+          composite: ["playerId"],
         },
         sk: {
           field: "sk",
-          composite: ["gameId"],
+          composite: [],
         },
       },
 
@@ -38,15 +38,29 @@ export const GameEntity = new Entity(
         },
         sk: {
           field: "gsi2sk",
+          composite: ["userId"],
+        },
+      },
+
+      player_: {
+        collection: "player",
+        index: "gsi3",
+        pk: {
+          field: "gsi3pk",
+          composite: ["playerId"],
+        },
+        sk: {
+          field: "gsi3sk",
           composite: [],
         },
       },
     },
 
     attributes: {
-      channelId: {
+      playerId: {
         type: "string",
         required: true,
+        default: () => ulid(),
       },
 
       userId: {
@@ -57,23 +71,16 @@ export const GameEntity = new Entity(
       gameId: {
         type: "string",
         required: true,
-        default: () => ulid(),
-      },
-
-      started: {
-        type: "boolean",
-        required: true,
-        default: false,
       },
     },
 
     model: {
       version: "1",
-      entity: "Game",
+      entity: "Player",
       service: "psycho-mantis",
     },
   },
   Configuration
 );
 
-export type GameEntityType = EntityItem<typeof GameEntity>;
+export type PlayerEntityType = EntityItem<typeof PlayerEntity>;

@@ -44,7 +44,19 @@ export function Database({ stack }: StackContext) {
     },
   });
 
+  const userTable = new Table(stack, "user-db", {
+    fields: {
+      pk: "string",
+      sk: "string",
+    },
+    primaryIndex: {
+      partitionKey: "pk",
+      sortKey: "sk",
+    },
+  });
+
   return {
-    lobbyTable
-  }
+    lobbyTable,
+    userTable,
+  };
 }

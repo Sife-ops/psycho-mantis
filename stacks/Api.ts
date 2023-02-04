@@ -11,7 +11,7 @@ export function Api({ stack }: StackContext) {
   const api = new ApiGateway(stack, "api", {
     defaults: {
       function: {
-        bind: [db.lobbyTable],
+        bind: [db.lobbyTable, db.userTable],
       },
     },
     routes: {
