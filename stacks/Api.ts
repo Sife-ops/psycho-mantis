@@ -1,17 +1,20 @@
+import { Database } from "./Database";
+
 import {
   use,
   StackContext,
   Api as ApiGateway,
+  Config,
 } from "@serverless-stack/resources";
-import { Database } from "./Database";
 
 export function Api({ stack }: StackContext) {
   const db = use(Database);
+  const botPublicKey = new Config.Secret(stack, "BOT_PUBLIC_KEY");
 
   const api = new ApiGateway(stack, "api", {
     defaults: {
       function: {
-        bind: [db.lobbyTable, db.userTable],
+        bind: [db.lobbyTable, db.userTable, botPublicKey],
       },
     },
     routes: {

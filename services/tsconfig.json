@@ -5,6 +5,9 @@
     "module": "esnext",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@psycho-mantis/bot/*": ["./functions/bot/*"]
+    }
   }
 }

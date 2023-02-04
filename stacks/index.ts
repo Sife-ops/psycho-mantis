@@ -1,5 +1,5 @@
 import { App } from "@serverless-stack/resources";
-// import { Web } from "./Web";
+import { Web } from "./Web";
 import { Database } from "./Database";
 import { Api } from "./Api";
 
@@ -14,5 +14,5 @@ export default function main(app: App) {
   app
     .stack(Database)
     .stack(Api)
-    // .stack(Web);
+    .stack(Web);
 }

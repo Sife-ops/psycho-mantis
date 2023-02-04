@@ -10,3 +10,8 @@ export const model = new Service<Model>({
   GameEntity: Entity.GameEntity,
   PlayerEntity: Entity.PlayerEntity,
 });
+
+export interface GameCollection {
+  GameEntity: Entity.GameEntityType[];
+  PlayerEntity: Entity.PlayerEntityType[];
+}

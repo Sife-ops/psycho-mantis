@@ -65,6 +65,12 @@ export const GameEntity = new Entity(
         required: true,
         default: false,
       },
+
+      active: {
+        type: "boolean",
+        required: true,
+        default: true,
+      },
     },
 
     model: {
