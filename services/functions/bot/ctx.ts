@@ -1,98 +1,14 @@
-import AWS from "aws-sdk";
-// import { GameCollection, model as model_ } from "@bombadil/core/model";
 import * as lobby from "@psycho-mantis/lib/model/lobby";
-import * as model_ from "@psycho-mantis/lib/model";
-// import { Queue } from "@serverless-stack/node/queue";
-// import { WebSocketApi } from "@serverless-stack/node/api";
-import { OptionSchema, onboardUser } from "./common";
+import * as db_ from "@psycho-mantis/lib/model";
+import { OptionSchema, onboardUser, fetchDiscord } from "./common";
 
-// import {
-//   Coords,
-//   CoordsPair,
-//   adjXY,
-//   compareXY,
-//   compareXYPair,
-// } from "@bombadil/lib";
+export class Options {
+  private interactionBody;
 
-const sqs = new AWS.SQS();
-// const wsApi = new AWS.ApiGatewayManagementApi({
-//   endpoint: WebSocketApi.webSocketApi.url.split("wss://")[1],
-// });
-
-export class Ctx {
-  interactionBody;
-  // interactionResult;
-  gameCollection;
-  // handlerType;
-  service;
-  // model = model_;
-
-  private constructor(c: {
-    interactionBody: any;
-    // interactionResult?: Partial<GameCollection>;
-    gameCollection?: lobby.GameCollection;
-  }) {
+  constructor(c: { interactionBody: any }) {
     this.interactionBody = c.interactionBody;
-    // this.interactionResult = c.interactionResult;
-    this.gameCollection = c.gameCollection;
-    // this.handlerType = process.env.HANDLER_TYPE as "bot" | "consumer";
-    this.service = { sqs };
   }
 
-  static async init({
-    interactionBody,
-  }: // interactionResult,
-  {
-    interactionBody: any;
-    // interactionResult?: Partial<GameCollection>;
-  }) {
-    const gameCollection = await model_.lobby.model.entities.GameEntity.query
-      .channel({ channelId: interactionBody.channel_id })
-      .where(({ active }, { eq }) => eq(active, true))
-      .go()
-      .then(({ data }) => data[0])
-      .then((game) => {
-        if (!game) return undefined;
-        return model_.lobby.model.collections
-          .game({ gameId: game.gameId })
-          .go()
-          .then((e) => e.data);
-      });
-
-    // const gameCollection = await model_.entities.GameEntity.query
-    //   .channel({ channelId: interactionBody.channel_id })
-    //   .where(({ winner }, { notExists }) => notExists(winner))
-    //   .go()
-    //   .then(({ data }) => data[0])
-    //   .then((game) => {
-    //     if (!game) return undefined;
-    //     return model_.collections
-    //       .game({ gameId: game.gameId })
-    //       .go()
-    //       .then((e) => e.data);
-    //   });
-
-    return new Ctx({
-      interactionBody,
-      // interactionResult,
-      gameCollection,
-    });
-  }
-
-  // body
-  getChannelId(): string {
-    return this.interactionBody.channel_id;
-  }
-
-  getUser() {
-    return this.interactionBody.member.user;
-  }
-
-  getUserId(): string {
-    return this.getUser().id;
-  }
-
-  // options
   getFlatOptions(): OptionSchema[][] {
     const recurse = (options: OptionSchema[]): OptionSchema[][] => {
       if (!options || options.length < 1) return [];
@@ -119,17 +35,75 @@ export class Ctx {
     ];
   }
 
-  getCommandName(index: number) {
+  getCommandName(index: number): string {
     return this.getFlatOptions()[index][0].name;
   }
 
-  getOptionValue(optionName: string) {
+  getOptionValue(optionName: string): string | number {
     const flatOptions = this.getFlatOptions();
     const value = flatOptions[flatOptions.length - 1].find(
       (option) => option.name === optionName
     )?.value;
     if (!value) throw new Error(`option not found: "${optionName}"`);
     return value;
+  }
+}
+
+export class Ctx {
+  interactionBody;
+  gameCollection;
+  options;
+  // service;
+  db = db_;
+
+  private constructor(c: {
+    interactionBody: any;
+    gameCollection?: lobby.GameCollection;
+  }) {
+    this.interactionBody = c.interactionBody;
+    this.gameCollection = c.gameCollection;
+    this.options = new Options({ interactionBody: c.interactionBody });
+  }
+
+  static async init({ interactionBody }: { interactionBody: any }) {
+    const gameCollection = await db_.lobby.model.entities.GameEntity.query
+      .channel({ channelId: interactionBody.channel_id })
+      .where(({ active }, { eq }) => eq(active, true))
+      .go()
+      .then(({ data }) => data[0])
+      .then((game) => {
+        if (!game) return undefined;
+        return db_.lobby.model.collections
+          .game({ gameId: game.gameId })
+          .go()
+          .then((e) => e.data);
+      });
+
+    return new Ctx({
+      interactionBody,
+      gameCollection,
+    });
+  }
+
+  //
+  followUp(body: Record<string, any>) {
+    const { application_id, token } = this.interactionBody;
+    return fetchDiscord(`/webhooks/${application_id}/${token}`, {
+      body,
+    });
+  }
+
+  // body
+  getChannelId(): string {
+    return this.interactionBody.channel_id;
+  }
+
+  getUser() {
+    return this.interactionBody.member.user;
+  }
+
+  getUserId(): string {
+    return this.getUser().id;
   }
 
   // game
@@ -146,166 +120,14 @@ export class Ctx {
     return this.getGameCollection().GameEntity[0];
   }
 
-  // getRound() {
-  //   return this.getGame().round;
-  // }
-
-  // getMap() {
-  //   // todo: explicit any
-  //   return JSON.parse(this.getGame().map) as any[][];
-  // }
-
-  // getFlatMap() {
-  //   return this.getMap()
-  //     .map((row, iRow) =>
-  //       row.map((col, iCol) => ({
-  //         ...col,
-  //         x: iCol,
-  //         y: iRow,
-  //       }))
-  //     )
-  //     .reduce((a, c) => {
-  //       return [...a, ...c];
-  //     }, []);
-  // }
-
-  // getMapAdjacent(type: string, coords: Coords) {
-  //   return this.getFlatMap()
-  //     .filter((c) => adjXY(coords).find((cc) => compareXY(cc, c)))
-  //     .filter((c) => c.type === type) as Coords[];
-  // }
-
-  // getMapIndex<T>(type: string, index: number): T | undefined {
-  //   return this.getFlatMap().filter((e) => e.type === type)[index];
-  // }
-
-  // getMapIndexOrThrow<T>(type: string, index: number): T {
-  //   const a = this.getMapIndex<T>(type, index);
-  //   if (!a) throw new Error("todo");
-  //   return a;
-  // }
-
   // player
   getPlayers() {
     return this.getGameCollection().PlayerEntity;
   }
 
-  // getPlayer(index?: number) {
-  //   const player = this.getPlayers().find((player) => {
-  //     if (typeof index === "number") {
-  //       return player.playerIndex === index;
-  //     } else {
-  //       return player.userId === this.getUserId();
-  //     }
-  //   });
-  //   if (!player) throw new Error("missing player");
-  //   return player;
-  // }
-
   getResolvedUsers() {
     return this.interactionBody.data.resolved.users;
   }
-
-  // // road
-  // getRoads() {
-  //   return this.getGameCollection().RoadEntity.map((road) => ({
-  //     ...road,
-  //     from: { x: road.x1, y: road.y1 },
-  //     to: { x: road.x2, y: road.y2 },
-  //   }));
-  // }
-
-  // getPlayerRoads() {
-  //   return this.getRoads().filter(
-  //     (road) => road.playerId === this.getPlayer().playerId
-  //   );
-  // }
-
-  // hasRoad(r: CoordsPair) {
-  //   return !!this.getRoads().find((road) => compareXYPair(road, r));
-  // }
-
-  // // building
-  // getBuildings() {
-  //   return this.getGameCollection().BuildingEntity;
-  // }
-
-  // getPlayerBuildings() {
-  //   return this.getBuildings().filter(
-  //     (building) => building.playerId === this.getPlayer().playerId
-  //   );
-  // }
-
-  // hasBuilding(b: Coords) {
-  //   return !!this.getBuildings().find((building) => compareXY(building, b));
-  // }
-
-  // hasSettlement(b: Coords) {
-  //   return (
-  //     this.getBuildings().find((building) => compareXY(building, b))
-  //       ?.building === "settlement"
-  //   );
-  // }
-
-  // // websocket
-  // messageClient(connectionId: string, message: any) {
-  //   return new Promise((resolve, reject) => {
-  //     this.service.wsApi.postToConnection(
-  //       {
-  //         ConnectionId: connectionId,
-  //         Data: JSON.stringify(message),
-  //       },
-
-  //       (err, data) => {
-  //         if (err) {
-  //           console.log("err is", err);
-  //           reject(err);
-  //         }
-
-  //         resolve(data);
-  //       }
-  //     );
-  //   });
-  // }
-
-  // allMessages(message: any) {
-  //   try {
-  //     return this.getGameCollection().ConnectionEntity.map(({ connectionId }) =>
-  //       this.messageClient(connectionId, message)
-  //     );
-  //   } catch {
-  //     return [];
-  //   }
-  // }
-
-  // messageAll(message: any) {
-  //   return Promise.all(this.allMessages(message));
-  // }
-
-  // // queue
-  // enqueueBot(message: Partial<GameCollection> = {}) {
-  //   return this.service.sqs
-  //     .sendMessage({
-  //       QueueUrl: Queue.botQueue.queueUrl,
-  //       MessageBody: JSON.stringify({
-  //         interactionBody: this.interactionBody,
-  //         interactionResult: message,
-  //       }),
-  //     })
-  //     .promise();
-  // }
-
-  // // interactionResult
-  // getInteractionResult() {
-  //   if (!this.interactionResult) throw new Error("missing interactionResult");
-  //   return this.interactionResult;
-  // }
-
-  // getInteractionResultPlayers() {
-  //   const { PlayerEntity } = this.getInteractionResult();
-  //   if (!PlayerEntity) throw new Error("missing PlayerEntity");
-  //   return PlayerEntity;
-  // }
 
   // onboard
   onboardMember() {

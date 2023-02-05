@@ -1,3 +1,4 @@
+import { Parameters } from "./Parameters";
 import { Database } from "./Database";
 
 import {
@@ -9,13 +10,12 @@ import {
 
 export function Api({ stack }: StackContext) {
   const db = use(Database);
-  const botPublicKey = new Config.Secret(stack, "BOT_PUBLIC_KEY");
-  const botToken = new Config.Secret(stack, "BOT_TOKEN");
+  const param = use(Parameters);
 
   const api = new ApiGateway(stack, "api", {
     defaults: {
       function: {
-        bind: [db.lobbyTable, db.userTable, botPublicKey, botToken],
+        bind: [db.lobbyTable, db.userTable, param.botPublicKey, param.botToken],
       },
     },
     routes: {
@@ -39,8 +39,5 @@ export function Api({ stack }: StackContext) {
     API: api.url,
   });
 
-  return {
-    api,
-    botToken
-  }
+  return api;
 }

@@ -1,7 +1,16 @@
 // import { model } from "@bombadil/core/model";
+import AWS from "aws-sdk";
 import { UserEntityType } from "@psycho-mantis/lib/model/user/user";
 import { z } from "zod";
 import * as db from "@psycho-mantis/lib/model";
+import fetch, { RequestInit } from "node-fetch";
+import { Config } from "@serverless-stack/node/config";
+
+/*
+ * aws
+ */
+
+export const sqs = new AWS.SQS();
 
 /*
  * schema
@@ -63,6 +72,24 @@ export const bodySchema = z.object({
  * functions
  */
 
+const apiUrl = "https://discord.com/api/v10"; // todo: move to constants
+
+export const fetchDiscord = async <T = any>(
+  e: string,
+  i: RequestInit
+): Promise<T> => {
+  // todo: zod
+  return fetch(`${apiUrl}${e}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bot ${Config.BOT_TOKEN}`,
+    },
+    ...i,
+    body: JSON.stringify(i.body),
+  }).then((e) => e.json() as T);
+};
+
 export const rollOne = (): number => {
   return [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
 };
@@ -77,16 +104,6 @@ export const messageResponse = (data: Record<string, any>) => {
     data,
   };
 };
-
-// export const genericResult = (
-//   content: string,
-//   mutations: Promise<any>[] = []
-// ) => {
-//   return {
-//     mutations: mutations,
-//     response: genericResponse(content),
-//   };
-// };
 
 // todo: sus
 export const getResolvedUser = (users: UsersSchema, userId: string) => {

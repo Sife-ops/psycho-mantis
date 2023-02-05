@@ -7,10 +7,12 @@ import {
 
 import { Api } from "./Api";
 import { Database } from "./Database";
+import { Parameters } from "./Parameters";
 
 export function Web({ stack }: StackContext) {
   const api = use(Api);
   const db = use(Database);
+  const param = use(Parameters);
 
   // const site = new StaticSite(stack, "site", {
   //   path: "web",
@@ -24,7 +26,7 @@ export function Web({ stack }: StackContext) {
   const botQueue = new Queue(stack, "botQueue", {
     consumer: {
       function: {
-        bind: [db.lobbyTable, db.userTable, api.botToken],
+        bind: [db.lobbyTable, db.userTable, param.botToken],
         // environment: { HANDLER_TYPE: "consumer" },
         // permissions: ["execute-api"],
         handler: "functions/bot/main.consumer",
@@ -32,7 +34,7 @@ export function Web({ stack }: StackContext) {
     },
   });
 
-  api.api.addRoutes(stack, {
+  api.addRoutes(stack, {
     "POST /bot": {
       function: {
         // bind: [site],
