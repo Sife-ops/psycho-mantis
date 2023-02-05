@@ -16,26 +16,6 @@ export const sqs = new AWS.SQS();
  * schema
  */
 
-export const envSchema = z.object({
-  PUBLIC_KEY: z.string(),
-  ONBOARD_QUEUE: z.string(),
-  WEB_URL: z.string(),
-});
-
-export const eventSchema = z.object({
-  body: z.string(),
-  headers: z.object({
-    "x-signature-ed25519": z.string(),
-    "x-signature-timestamp": z.string(),
-  }),
-});
-
-export const memberSchema = z.object({
-  user: z.object({
-    id: z.string(),
-  }),
-});
-
 export const optionSchema = z.object({
   name: z.string(),
   type: z.number(),
@@ -43,30 +23,6 @@ export const optionSchema = z.object({
   options: z.array(z.any()).optional(),
 });
 export type OptionSchema = z.infer<typeof optionSchema>;
-
-export const usersSchema = z.record(
-  z.object({
-    avatar: z.string(),
-    discriminator: z.string(),
-    id: z.string(),
-    username: z.string(),
-  })
-);
-type UsersSchema = z.infer<typeof usersSchema>;
-
-export const dataSchema = z.object({
-  name: z.string(),
-  options: z.array(optionSchema).optional(),
-  type: z.number(),
-});
-type DataSchema = z.infer<typeof dataSchema>;
-
-export const bodySchema = z.object({
-  channel_id: z.string(),
-  data: dataSchema,
-  member: memberSchema,
-  type: z.number(),
-});
 
 /*
  * functions
@@ -88,28 +44,6 @@ export const fetchDiscord = async <T = any>(
     ...i,
     body: JSON.stringify(i.body),
   }).then((e) => e.json() as T);
-};
-
-export const rollOne = (): number => {
-  return [1, 2, 3, 4, 5, 6][Math.floor(Math.random() * 6)];
-};
-
-export const rollTwo = (): number => {
-  return rollOne() + rollOne();
-};
-
-export const messageResponse = (data: Record<string, any>) => {
-  return {
-    type: 4,
-    data,
-  };
-};
-
-// todo: sus
-export const getResolvedUser = (users: UsersSchema, userId: string) => {
-  const user = users[userId];
-  if (!user) throw new Error("missing user");
-  return user;
 };
 
 export const onboardUser = async (user: UserEntityType & { id: string }) => {
@@ -143,42 +77,4 @@ export const onboardUser = async (user: UserEntityType & { id: string }) => {
           .go();
       }
     });
-};
-
-const terrainResources: Record<
-  "pasture" | "fields" | "mountains" | "hills" | "forest" | "desert",
-  "wool" | "grain" | "ore" | "brick" | "lumber" | "none"
-> = {
-  pasture: "wool",
-  fields: "grain",
-  mountains: "ore",
-  hills: "brick",
-  forest: "lumber",
-  desert: "none",
-};
-
-export const terrainResource = <
-  T extends {
-    terrain: "pasture" | "fields" | "mountains" | "hills" | "forest" | "desert";
-  }
->(
-  t: T
-) => {
-  return {
-    ...t,
-    resource: terrainResources[t.terrain],
-  };
-};
-
-export const randomNoRepeat = <T>(array: T[]) => {
-  let copy = array.slice(0);
-  return () => {
-    if (copy.length < 1) {
-      copy = array.slice(0);
-    }
-    let index = Math.floor(Math.random() * copy.length);
-    let item = copy[index];
-    copy.splice(index, 1);
-    return item;
-  };
 };

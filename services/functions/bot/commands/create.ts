@@ -6,18 +6,25 @@ export const create: Command = {
     const channelId = ctx.getChannelId();
     const userId = ctx.getUserId();
 
-    const data = await fetchDiscord<{ id: string }>(
+    const thread = await fetchDiscord<{ id: string }>(
       `/channels/${channelId}/threads`,
       {
         body: {
+          // todo: custom lobby name
           name: "Psycho Mantis",
         },
       }
     );
 
+    await fetchDiscord(`/channels/${thread.id}/messages`, {
+      body: {
+        content: `<@${userId}> created the lobby`,
+      },
+    });
+
     return {
       response: {
-        content: `new lobby <#${data.id}>`,
+        content: `<#${thread.id}> has been created`,
       },
       mutations: [
         ctx.db.lobby.model.entities.GameEntity.create({
@@ -32,12 +39,6 @@ export const create: Command = {
               userId,
             }).go()
           ),
-
-        fetchDiscord(`/channels/${data.id}/messages`, {
-          body: {
-            content: `<@${userId}> created a lobby`,
-          },
-        }),
       ],
     };
   },

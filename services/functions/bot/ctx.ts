@@ -1,5 +1,5 @@
-import * as lobby from "@psycho-mantis/lib/model/lobby";
 import * as db_ from "@psycho-mantis/lib/model";
+import * as lobby from "@psycho-mantis/lib/model/lobby";
 import { OptionSchema, onboardUser, fetchDiscord } from "./common";
 
 export class Options {
@@ -53,7 +53,6 @@ export class Ctx {
   interactionBody;
   gameCollection;
   options;
-  // service;
   db = db_;
 
   private constructor(c: {
