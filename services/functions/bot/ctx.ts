@@ -67,7 +67,7 @@ export class Ctx {
   static async init({ interactionBody }: { interactionBody: any }) {
     const gameCollection = await db_.lobby.model.entities.GameEntity.query
       .channel({ channelId: interactionBody.channel_id })
-      .where(({ active }, { eq }) => eq(active, true))
+      // .where(({ active }, { eq }) => eq(active, true))
       .go()
       .then(({ data }) => data[0])
       .then((game) => {

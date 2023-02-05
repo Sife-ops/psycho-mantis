@@ -3,7 +3,7 @@ import AWS from "aws-sdk";
 import { UserEntityType } from "@psycho-mantis/lib/model/user/user";
 import { z } from "zod";
 import * as db from "@psycho-mantis/lib/model";
-import fetch, { RequestInit } from "node-fetch";
+import fetch, { RequestInit, Response } from "node-fetch";
 import { Config } from "@serverless-stack/node/config";
 
 /*
@@ -30,10 +30,10 @@ export type OptionSchema = z.infer<typeof optionSchema>;
 
 const apiUrl = "https://discord.com/api/v10"; // todo: move to constants
 
-export const fetchDiscord = async <T = any>(
+export const fetchDiscord = async (
   e: string,
   i: RequestInit
-): Promise<T> => {
+): Promise<Response> => {
   // todo: zod
   return fetch(`${apiUrl}${e}`, {
     method: "POST",
@@ -43,7 +43,7 @@ export const fetchDiscord = async <T = any>(
     },
     ...i,
     body: JSON.stringify(i.body),
-  }).then((e) => e.json() as T);
+  });
 };
 
 export const onboardUser = async (user: UserEntityType & { id: string }) => {

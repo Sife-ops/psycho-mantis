@@ -34,6 +34,7 @@ export function Web({ stack }: StackContext) {
     },
   });
 
+  // todo: move to api
   api.addRoutes(stack, {
     "POST /bot": {
       function: {

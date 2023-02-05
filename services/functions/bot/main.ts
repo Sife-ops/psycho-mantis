@@ -71,10 +71,10 @@ export const api: Handler<
 };
 
 export const consumer = async (event: any) => {
-  try {
-    const messageBody = JSON.parse(event.Records[0].body);
-    const ctx = await Ctx.init(messageBody);
+  const messageBody = JSON.parse(event.Records[0].body);
+  const ctx = await Ctx.init(messageBody);
 
+  try {
     await Promise.all(ctx.onboardUsers());
 
     const { response, mutations } = await runner(
@@ -85,10 +85,12 @@ export const consumer = async (event: any) => {
 
     await Promise.all([
       ...(mutations ? mutations : []),
-      ctx.followUp(response),
+      ...(response ? [ctx.followUp(response)] : []),
     ]);
   } catch (e) {
     console.log(e);
-    return;
+    await ctx.followUp({
+      content: "todo: sorry",
+    });
   }
 };

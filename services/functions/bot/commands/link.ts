@@ -1,7 +1,15 @@
 import { Command } from "../runner";
 
 export const link: Command = {
-  handler: async () => {
+  handler: async (ctx) => {
+    if (!ctx.hasGame()) {
+      return {
+        response: {
+          content: "game not found",
+        },
+      };
+    }
+
     return {
       response: {
         embeds: [

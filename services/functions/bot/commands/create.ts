@@ -5,20 +5,15 @@ export const create: Command = {
   handler: async (ctx) => {
     const channelId = ctx.getChannelId();
     const userId = ctx.getUserId();
+    const name = ctx.options.getOptionValue("name");
 
-    const thread = await fetchDiscord<{ id: string }>(
-      `/channels/${channelId}/threads`,
-      {
-        body: {
-          // todo: custom lobby name
-          name: "Psycho Mantis",
-        },
-      }
-    );
+    const thread = await fetchDiscord(`/channels/${channelId}/threads`, {
+      body: { name },
+    }).then(async (res) => (await res.json()) as { id: string });
 
     await fetchDiscord(`/channels/${thread.id}/messages`, {
       body: {
-        content: `<@${userId}> created the lobby`,
+        content: `<@${userId}> created the lobby. Message \`/link\` for URL.`,
       },
     });
 
@@ -28,7 +23,7 @@ export const create: Command = {
       },
       mutations: [
         ctx.db.lobby.model.entities.GameEntity.create({
-          channelId,
+          channelId: thread.id,
           userId,
         })
           .go()
