@@ -39,5 +39,8 @@ export function Api({ stack }: StackContext) {
     API: api.url,
   });
 
-  return api;
+  return {
+    api,
+    botToken
+  }
 }

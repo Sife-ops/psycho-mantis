@@ -1,4 +1,4 @@
-// import AWS from "aws-sdk";
+import AWS from "aws-sdk";
 // import { GameCollection, model as model_ } from "@bombadil/core/model";
 import * as lobby from "@psycho-mantis/lib/model/lobby";
 import * as model_ from "@psycho-mantis/lib/model";
@@ -14,7 +14,7 @@ import { OptionSchema, onboardUser } from "./common";
 //   compareXYPair,
 // } from "@bombadil/lib";
 
-// const sqs = new AWS.SQS();
+const sqs = new AWS.SQS();
 // const wsApi = new AWS.ApiGatewayManagementApi({
 //   endpoint: WebSocketApi.webSocketApi.url.split("wss://")[1],
 // });
@@ -24,7 +24,7 @@ export class Ctx {
   // interactionResult;
   gameCollection;
   // handlerType;
-  // service;
+  service;
   // model = model_;
 
   private constructor(c: {
@@ -36,7 +36,7 @@ export class Ctx {
     // this.interactionResult = c.interactionResult;
     this.gameCollection = c.gameCollection;
     // this.handlerType = process.env.HANDLER_TYPE as "bot" | "consumer";
-    // this.service = { sqs, wsApi };
+    this.service = { sqs };
   }
 
   static async init({
