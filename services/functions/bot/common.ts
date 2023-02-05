@@ -71,24 +71,22 @@ export const rollTwo = (): number => {
   return rollOne() + rollOne();
 };
 
-export const genericResponse = (content: string) => {
+export const messageResponse = (data: Record<string, any>) => {
   return {
     type: 4,
-    data: {
-      content,
-    },
+    data,
   };
 };
 
-export const genericResult = (
-  content: string,
-  mutations: Promise<any>[] = []
-) => {
-  return {
-    mutations: mutations,
-    response: genericResponse(content),
-  };
-};
+// export const genericResult = (
+//   content: string,
+//   mutations: Promise<any>[] = []
+// ) => {
+//   return {
+//     mutations: mutations,
+//     response: genericResponse(content),
+//   };
+// };
 
 // todo: sus
 export const getResolvedUser = (users: UsersSchema, userId: string) => {
