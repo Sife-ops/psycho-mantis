@@ -5,16 +5,16 @@ import { Command } from "../runner";
 
 export const link: Command = {
   handler: async (ctx) => {
-    if (!ctx.hasGame()) {
+    if (!ctx.hasLobby()) {
       return {
         response: {
-          content: "game not found",
+          content: "lobby not found",
         },
       };
     }
 
     const token = sign(
-      { userId: ctx.getUserId(), gameId: ctx.getGame().gameId },
+      { userId: ctx.getUserId(), lobbyId: ctx.getLobby().lobbyId },
       Config.WEB_TOKEN_SECRET
     );
 

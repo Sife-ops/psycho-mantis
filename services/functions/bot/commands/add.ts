@@ -18,7 +18,7 @@ export const add: Command = {
     return {
       mutations: [
         ctx.db.lobby.model.entities.PlayerEntity.create({
-          gameId: ctx.getGame().gameId,
+          lobbyId: ctx.getLobby().lobbyId,
           userId,
         }).go(),
 

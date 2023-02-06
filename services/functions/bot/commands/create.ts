@@ -22,15 +22,15 @@ export const create: Command = {
         content: `<#${thread.id}> has been created`,
       },
       mutations: [
-        ctx.db.lobby.model.entities.GameEntity.create({
+        ctx.db.lobby.model.entities.LobbyEntity.create({
           channelId: thread.id,
           userId,
         })
           .go()
           .then((e) => e.data)
-          .then(({ gameId }) =>
+          .then(({ lobbyId }) =>
             ctx.db.lobby.model.entities.PlayerEntity.create({
-              gameId,
+              lobbyId,
               userId,
             }).go()
           ),

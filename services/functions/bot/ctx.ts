@@ -50,37 +50,37 @@ export class Options {
 }
 
 export class Ctx {
-  interactionBody;
-  gameCollection;
-  options;
   db = db_;
+  interactionBody;
+  lobbyCollection;
+  options;
 
   private constructor(c: {
     interactionBody: any;
-    gameCollection?: lobby.GameCollection;
+    lobbyCollection?: lobby.LobbyCollection;
   }) {
     this.interactionBody = c.interactionBody;
-    this.gameCollection = c.gameCollection;
+    this.lobbyCollection = c.lobbyCollection;
     this.options = new Options({ interactionBody: c.interactionBody });
   }
 
   static async init({ interactionBody }: { interactionBody: any }) {
-    const gameCollection = await db_.lobby.model.entities.GameEntity.query
+    const lobbyCollection = await db_.lobby.model.entities.LobbyEntity.query
       .channel({ channelId: interactionBody.channel_id })
       // .where(({ active }, { eq }) => eq(active, true))
       .go()
       .then(({ data }) => data[0])
-      .then((game) => {
-        if (!game) return undefined;
+      .then((lobby) => {
+        if (!lobby) return undefined;
         return db_.lobby.model.collections
-          .game({ gameId: game.gameId })
+          .lobby({ lobbyId: lobby.lobbyId })
           .go()
           .then((e) => e.data);
       });
 
     return new Ctx({
       interactionBody,
-      gameCollection,
+      lobbyCollection,
     });
   }
 
@@ -105,23 +105,23 @@ export class Ctx {
     return this.getUser().id;
   }
 
-  // game
-  getGameCollection() {
-    if (!this.gameCollection) throw new Error("missing gameCollection");
-    return this.gameCollection;
+  // lobby
+  getLobbyCollection() {
+    if (!this.lobbyCollection) throw new Error("missing lobbyCollection");
+    return this.lobbyCollection;
   }
 
-  hasGame() {
-    return !!this.gameCollection;
+  hasLobby() {
+    return !!this.lobbyCollection;
   }
 
-  getGame() {
-    return this.getGameCollection().GameEntity[0];
+  getLobby() {
+    return this.getLobbyCollection().LobbyEntity[0];
   }
 
   // player
   getPlayers() {
-    return this.getGameCollection().PlayerEntity;
+    return this.getLobbyCollection().PlayerEntity;
   }
 
   getResolvedUsers() {

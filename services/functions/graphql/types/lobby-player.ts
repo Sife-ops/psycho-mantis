@@ -9,12 +9,12 @@ LobbyPlayerType.implement({
   fields: (t) => ({
     userId: t.exposeID("userId"),
     playerId: t.exposeString("playerId"),
-    gameId: t.exposeString("gameId"),
+    lobbyId: t.exposeString("lobbyId"),
 
     user: t.field({
       type: UserType,
       resolve: async (p, _, ctx) => {
-        return await ctx.model.user.entities.UserEntity.query
+        return await ctx.db.user.model.entities.UserEntity.query
           .user({ userId: p.userId })
           .go()
           .then((e) => e.data[0]);

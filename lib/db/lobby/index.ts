@@ -2,16 +2,16 @@ import * as Entity from "./entities";
 import { Service } from "electrodb";
 
 export type Model = {
-  GameEntity: typeof Entity.GameEntity;
+  LobbyEntity: typeof Entity.LobbyEntity;
   PlayerEntity: typeof Entity.PlayerEntity;
 };
 
 export const model = new Service<Model>({
-  GameEntity: Entity.GameEntity,
+  LobbyEntity: Entity.LobbyEntity,
   PlayerEntity: Entity.PlayerEntity,
 });
 
-export interface GameCollection {
-  GameEntity: Entity.GameEntityType[];
+export interface LobbyCollection {
+  LobbyEntity: Entity.LobbyEntityType[];
   PlayerEntity: Entity.PlayerEntityType[];
 }
