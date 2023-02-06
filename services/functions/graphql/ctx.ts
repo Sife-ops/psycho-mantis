@@ -1,8 +1,8 @@
-import * as db_ from "@psycho-mantis/lib/model";
+import * as db_ from "@psycho-mantis/lib/db";
 import { APIGatewayProxyEventV2, Context } from "aws-lambda";
 import { Config } from "@serverless-stack/node/config";
 import { ExecutionContext } from "graphql-helix";
-import { GameCollection } from "@psycho-mantis/lib/model/lobby";
+import { GameCollection } from "@psycho-mantis/lib/db/lobby";
 import { JwtPayload, verify } from "jsonwebtoken";
 
 interface User {
@@ -41,8 +41,10 @@ export class Ctx {
 
   static async init(c: { request: Request }) {
     const token = c.request.event.headers.authorization; // todo: if not defined
+    if (!token) throw new Error("missing token");
+
     const { gameId, userId } = verify(
-      token!,
+      token,
       Config.WEB_TOKEN_SECRET
     ) as Payload;
 

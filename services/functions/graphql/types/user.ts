@@ -1,4 +1,4 @@
-import { UserEntityType } from "@psycho-mantis/lib/model/user/user";
+import { UserEntityType } from "@psycho-mantis/lib/db/user/user";
 import { builder } from "../builder";
 
 export const UserType = builder.objectRef<UserEntityType>("User");

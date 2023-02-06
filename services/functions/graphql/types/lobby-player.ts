@@ -1,4 +1,4 @@
-import * as lobby from "@psycho-mantis/lib/model/lobby/entities";
+import * as lobby from "@psycho-mantis/lib/db/lobby/entities";
 import { UserType } from "./user";
 import { builder } from "../builder";
 

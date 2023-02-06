@@ -1,5 +1,5 @@
 import { builder } from "../builder";
-import { GameEntityType } from "@psycho-mantis/lib/model/lobby/entities/game";
+import { GameEntityType } from "@psycho-mantis/lib/db/lobby/entities/game";
 import { LobbyPlayerType } from "./lobby-player";
 
 export const LobbyType = builder.objectRef<GameEntityType>("Lobby");
