@@ -60,6 +60,12 @@ export const GameEntity = new Entity(
         default: () => ulid(),
       },
 
+      game: {
+        type: "string",
+        required: true,
+        default: "",
+      },
+
       started: {
         type: "boolean",
         required: true,

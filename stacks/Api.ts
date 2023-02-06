@@ -5,7 +5,6 @@ import {
   use,
   StackContext,
   Api as ApiGateway,
-  Config,
 } from "@serverless-stack/resources";
 
 export function Api({ stack }: StackContext) {
@@ -15,7 +14,13 @@ export function Api({ stack }: StackContext) {
   const api = new ApiGateway(stack, "api", {
     defaults: {
       function: {
-        bind: [db.lobbyTable, db.userTable, param.botPublicKey, param.botToken],
+        bind: [
+          db.lobbyTable,
+          db.userTable,
+          param.botPublicKey,
+          param.botToken,
+          param.webTokenSecret,
+        ],
       },
     },
     routes: {

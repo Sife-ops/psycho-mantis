@@ -1,15 +1,9 @@
-import SchemaBuilder from "@pothos/core";
-import { lobby, user } from "@psycho-mantis/lib/model";
 import DataloaderPlugin from "@pothos/plugin-dataloader";
-import { Service } from "electrodb";
+import SchemaBuilder from "@pothos/core";
+import { Ctx } from "./ctx";
 
 export const builder = new SchemaBuilder<{
-  Context: {
-    model: {
-      lobby: Service<lobby.Model>;
-      user: Service<user.Model>;
-    };
-  };
+  Context: Ctx;
 }>({
   plugins: [DataloaderPlugin],
 });

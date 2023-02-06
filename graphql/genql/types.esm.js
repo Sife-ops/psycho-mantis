@@ -1,59 +1,24 @@
 export default {
     "scalars": [
         1,
-        2,
-        5
+        3
     ],
     "types": {
-        "Article": {
-            "id": [
+        "Mutation": {
+            "mello": [
                 1
             ],
-            "title": [
-                2
-            ],
-            "url": [
-                2
-            ],
             "__typename": [
-                2
+                1
             ]
         },
-        "ID": {},
         "String": {},
-        "Mutation": {
-            "createArticle": [
-                0,
-                {
-                    "title": [
-                        2,
-                        "String!"
-                    ],
-                    "url": [
-                        2,
-                        "String!"
-                    ]
-                }
-            ],
-            "__typename": [
-                2
-            ]
-        },
         "Query": {
-            "article": [
-                0,
-                {
-                    "articleID": [
-                        2,
-                        "String!"
-                    ]
-                }
-            ],
-            "articles": [
-                0
+            "hello": [
+                1
             ],
             "__typename": [
-                2
+                1
             ]
         },
         "Boolean": {}
