@@ -21,57 +21,66 @@ interface Payload extends JwtPayload {
 export class Ctx {
   db = db_;
   game;
+  jwtPayload;
   lobbyCollection;
   request;
-  user;
+  users;
 
   private constructor(c: {
     game?: Game;
     lobbyCollection: LobbyCollection;
     request: Request;
-    user: UserEntityType;
+    users: UserEntityType[];
+    jwtPayload: Payload;
   }) {
     this.game = c.game;
+    this.jwtPayload = c.jwtPayload;
     this.lobbyCollection = c.lobbyCollection;
     this.request = c.request;
-    this.user = c.user;
+    this.users = c.users;
   }
 
   static async init(c: { request: Request }) {
     const token = c.request.event.headers.authorization; // todo: if not defined
     if (!token) throw new Error("missing token");
 
-    let lobbyId: string, userId: string;
+    let jwtPayload: Payload;
     try {
-      ({ lobbyId, userId } = verify(token, Config.WEB_TOKEN_SECRET) as Payload);
+      jwtPayload = verify(token, Config.WEB_TOKEN_SECRET) as Payload;
     } catch (e) {
       console.log(e);
       throw new Error("failed to verify token");
     }
 
-    const [user, lobbyCollection] = await Promise.all([
-      db_.user.model.entities.UserEntity.get({ userId })
-        .go()
-        .then((e) => e.data),
-      db_.lobby.model.collections
-        .lobby({ lobbyId })
-        .go()
-        .then((e) => e.data),
-    ]);
-    if (!user) throw new Error("missing user");
+    const lobbyCollection = await db_.lobby.model.collections
+      .lobby({ lobbyId: jwtPayload.lobbyId })
+      .go()
+      .then((e) => e.data);
     if (!lobbyCollection) throw new Error("missing lobbyCollection");
+
+    const users = await Promise.all(
+      lobbyCollection.PlayerEntity.map((player) =>
+        db_.user.model.entities.UserEntity.get({
+          userId: player.userId,
+        })
+          .go()
+          .then((res) => res.data)
+          .then((data) => data!)
+      )
+    );
 
     const { gameTitle } = lobbyCollection.LobbyEntity[0];
     let game: Game | undefined;
     if (gameTitle) {
-      game = await Game.init({ gameTitle, gameId: lobbyId });
+      game = await Game.init({ gameTitle, gameId: jwtPayload.lobbyId });
     }
 
     return new Ctx({
       game,
+      jwtPayload,
       lobbyCollection,
       request: c.request,
-      user,
+      users,
     });
   }
 
@@ -83,8 +92,16 @@ export class Ctx {
     return this.lobbyCollection.PlayerEntity;
   }
 
-  isGm() {
-    return this.getLobby().userId === this.user.userId;
+  getViewer(): UserEntityType {
+    return this.users.find((e) => e.userId === this.jwtPayload.userId)!;
+  }
+
+  getGm(): UserEntityType {
+    return this.users.find((e) => e.userId === this.getLobby().userId)!;
+  }
+
+  isViewerGm(): boolean {
+    return this.getViewer().userId === this.getGm().userId;
   }
 
   getGame() {

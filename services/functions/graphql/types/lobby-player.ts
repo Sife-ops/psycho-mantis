@@ -10,15 +10,16 @@ LobbyPlayerType.implement({
     userId: t.exposeID("userId"),
     playerId: t.exposeString("playerId"),
     lobbyId: t.exposeString("lobbyId"),
+    team: t.exposeString("team"),
+
+    isGm: t.boolean({
+      resolve: (p, __, ctx) => p.userId === ctx.getGm().userId,
+    }),
 
     user: t.field({
       type: UserType,
-      resolve: async (p, _, ctx) => {
-        return await ctx.db.user.model.entities.UserEntity.query
-          .user({ userId: p.userId })
-          .go()
-          .then((e) => e.data[0]);
-      },
+      resolve: (p, _, ctx) =>
+        ctx.users.find((user) => user.userId === p.userId)!,
     }),
   }),
 });

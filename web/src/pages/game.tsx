@@ -1,16 +1,11 @@
-import { useTypedQuery } from "@psycho-mantis/graphql/urql";
+import { useGame } from "./game-hook";
 
 export default function Game() {
-  const [hello] = useTypedQuery({
-    query: {
-      hello: true,
-    },
-  });
-  console.log(hello);
+  const game = useGame();
 
   return (
     <div>
-      <div>game</div>
+      <div>{JSON.stringify(game.lobbyQueryRes.data)}</div>
     </div>
   );
 }

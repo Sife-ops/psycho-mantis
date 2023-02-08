@@ -1,7 +1,32 @@
+type Lobby {
+  channelId: ID!
+  gameTitle: String!
+  lobbyId: String!
+  players: [LobbyPlayer!]!
+  started: Boolean!
+}
+
+type LobbyPlayer {
+  isGm: Boolean!
+  lobbyId: String!
+  playerId: String!
+  team: String!
+  user: User!
+  userId: ID!
+}
+
 type Mutation {
   mello: String!
 }
 
 type Query {
   hello: String!
+  lobby: Lobby!
+}
+
+type User {
+  avatar: String!
+  discriminator: String!
+  userId: ID!
+  username: String!
 }
