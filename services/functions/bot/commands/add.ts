@@ -15,12 +15,14 @@ export const add: Command = {
 
     const { application_id, token } = ctx.interactionBody;
 
+    await ctx.db.lobby.model.entities.PlayerEntity.create({
+      lobbyId: ctx.getLobby().lobbyId,
+      userId,
+    }).go();
+
     return {
       mutations: [
-        ctx.db.lobby.model.entities.PlayerEntity.create({
-          lobbyId: ctx.getLobby().lobbyId,
-          userId,
-        }).go(),
+        ...ctx.allMessages({ action: "update-lobby" }),
 
         fetchDiscord(
           `/webhooks/${application_id}/${token}/messages/@original`,

@@ -1,11 +1,7 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider as UrqlProvider, createClient } from "urql";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Game from "./pages/game";
-// import Home from "./pages/Home";
-// import Article from "./pages/Article";
-// import "./index.css";
 
 const urlParams = new URLSearchParams(window.location.search);
 const jwt = urlParams.get("jwt");

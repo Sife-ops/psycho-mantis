@@ -5,11 +5,25 @@ import {
   use,
   StackContext,
   Api as ApiGateway,
+  WebSocketApi,
 } from "@serverless-stack/resources";
 
 export function Api({ stack }: StackContext) {
   const db = use(Database);
   const param = use(Parameters);
+
+  const webSocketApi = new WebSocketApi(stack, "webSocketApi", {
+    defaults: {
+      function: {
+        bind: [db.lobbyTable, db.userTable, db.clickTable],
+      },
+    },
+    routes: {
+      $connect: "functions/webSocket.connect",
+      $disconnect: "functions/webSocket.disconnect",
+      $default: "functions/webSocket.default_",
+    },
+  });
 
   const api = new ApiGateway(stack, "api", {
     defaults: {
@@ -21,7 +35,9 @@ export function Api({ stack }: StackContext) {
           param.botPublicKey,
           param.botToken,
           param.webTokenSecret,
+          webSocketApi,
         ],
+        permissions: ["execute-api"],
       },
     },
     routes: {
@@ -43,7 +59,11 @@ export function Api({ stack }: StackContext) {
 
   stack.addOutputs({
     API: api.url,
+    WS_API: webSocketApi.url,
   });
 
-  return api;
+  return {
+    api,
+    webSocketApi,
+  };
 }

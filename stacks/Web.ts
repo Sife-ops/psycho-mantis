@@ -19,7 +19,8 @@ export function Web({ stack }: StackContext) {
     buildCommand: "npm run build",
     buildOutput: "dist",
     environment: {
-      VITE_API_URL: api.url,
+      VITE_API_URL: api.api.url,
+      VITE_WS_API_URL: api.webSocketApi.url,
     },
   });
 
@@ -27,6 +28,7 @@ export function Web({ stack }: StackContext) {
     consumer: {
       function: {
         bind: [
+          api.webSocketApi,
           db.clickTable,
           db.lobbyTable,
           db.userTable,
@@ -34,13 +36,13 @@ export function Web({ stack }: StackContext) {
           param.webTokenSecret,
           site,
         ],
-        // permissions: ["execute-api"],
+        permissions: ["execute-api"],
         handler: "functions/bot/main.consumer",
       },
     },
   });
 
-  api.addRoutes(stack, {
+  api.api.addRoutes(stack, {
     "POST /bot": {
       function: {
         bind: [botQueue],

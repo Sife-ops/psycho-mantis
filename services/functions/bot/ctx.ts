@@ -1,6 +1,6 @@
 import * as db_ from "@psycho-mantis/lib/db";
 import * as lobby from "@psycho-mantis/lib/db/lobby";
-import { OptionSchema, onboardUser, fetchDiscord } from "./common";
+import { OptionSchema, onboardUser, fetchDiscord, wsApi } from "./common";
 
 export class Options {
   private interactionBody;
@@ -84,12 +84,43 @@ export class Ctx {
     });
   }
 
-  //
+  // todo: remove
   followUp(body: Record<string, any>) {
     const { application_id, token } = this.interactionBody;
     return fetchDiscord(`/webhooks/${application_id}/${token}`, {
       body,
     });
+  }
+
+  // websocket
+  messageClient(connectionId: string, message: any) {
+    return new Promise((resolve, reject) => {
+      wsApi.postToConnection(
+        {
+          ConnectionId: connectionId,
+          Data: JSON.stringify(message),
+        },
+
+        (err, data) => {
+          if (err) {
+            console.log("err is", err);
+            reject(err);
+          }
+
+          resolve(data);
+        }
+      );
+    });
+  }
+
+  allMessages(message: any) {
+    try {
+      return this.getLobbyCollection().ConnectionEntity.map(
+        ({ connectionId }) => this.messageClient(connectionId, message)
+      );
+    } catch {
+      return [];
+    }
   }
 
   // body

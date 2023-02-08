@@ -72,7 +72,7 @@ export class Ctx {
     const { gameTitle } = lobbyCollection.LobbyEntity[0];
     let game: Game | undefined;
     if (gameTitle) {
-      game = await Game.init({ gameTitle, gameId: jwtPayload.lobbyId });
+      game = await Game.init({ gameTitle, lobbyId: jwtPayload.lobbyId });
     }
 
     return new Ctx({
@@ -120,11 +120,11 @@ class Game {
     this.clickCollection = c.clickCollection;
   }
 
-  static async init(c: { gameTitle: string; gameId: string }) {
+  static async init(c: { gameTitle: string; lobbyId: string }) {
     switch (c.gameTitle) {
       case "Click": {
         const clickCollection = await db_.click.model.collections
-          .game({ gameId: c.gameId })
+          .lobby({ lobbyId: c.lobbyId })
           .go()
           .then((e) => e.data);
         return new Game({ clickCollection });

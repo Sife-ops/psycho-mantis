@@ -16,29 +16,29 @@ export const LobbyEntity = new Entity(
         },
       },
 
-      user_: {
-        collection: "user",
+      lobby_: {
+        collection: "lobby",
         index: "gsi1",
         pk: {
           field: "gsi1pk",
-          composite: ["userId"],
+          composite: ["lobbyId"],
         },
         sk: {
           field: "gsi1sk",
-          composite: ["lobbyId"],
+          composite: [],
         },
       },
 
-      lobby_: {
-        collection: "lobby",
+      user_: {
+        collection: "user",
         index: "gsi2",
         pk: {
           field: "gsi2pk",
-          composite: ["lobbyId"],
+          composite: ["userId"],
         },
         sk: {
           field: "gsi2sk",
-          composite: [],
+          composite: ["lobbyId"],
         },
       },
     },
@@ -49,15 +49,15 @@ export const LobbyEntity = new Entity(
         required: true,
       },
 
-      userId: {
-        type: "string",
-        required: true,
-      },
-
       lobbyId: {
         type: "string",
         required: true,
         default: () => ulid(),
+      },
+
+      userId: {
+        type: "string",
+        required: true,
       },
 
       gameTitle: {
