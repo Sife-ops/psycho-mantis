@@ -72,6 +72,12 @@ export const PlayerEntity = new Entity(
         type: "string",
         required: true,
       },
+
+      team: {
+        type: "string",
+        required: true,
+        default: "",
+      },
     },
 
     model: {

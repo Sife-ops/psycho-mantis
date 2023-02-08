@@ -2,7 +2,7 @@ import { Configuration } from "../config";
 import { Entity, EntityItem } from "electrodb";
 import { ulid } from "ulid";
 
-export const LobbyEntity = new Entity(
+export const GameEntity = new Entity(
   {
     indexes: {
       channel: {
@@ -12,7 +12,7 @@ export const LobbyEntity = new Entity(
         },
         sk: {
           field: "sk",
-          composite: ["lobbyId"],
+          composite: ["gameId"],
         },
       },
 
@@ -25,16 +25,16 @@ export const LobbyEntity = new Entity(
         },
         sk: {
           field: "gsi1sk",
-          composite: ["lobbyId"],
+          composite: ["gameId"],
         },
       },
 
-      lobby_: {
-        collection: "lobby",
+      game_: {
+        collection: "game",
         index: "gsi2",
         pk: {
           field: "gsi2pk",
-          composite: ["lobbyId"],
+          composite: ["gameId"],
         },
         sk: {
           field: "gsi2sk",
@@ -54,38 +54,20 @@ export const LobbyEntity = new Entity(
         required: true,
       },
 
-      lobbyId: {
+      gameId: {
         type: "string",
         required: true,
         default: () => ulid(),
-      },
-
-      gameTitle: {
-        type: "string",
-        required: true,
-        default: "",
-      },
-
-      started: {
-        type: "boolean",
-        required: true,
-        default: false,
-      },
-
-      active: {
-        type: "boolean",
-        required: true,
-        default: true,
       },
     },
 
     model: {
       version: "1",
-      entity: "Lobby",
+      entity: "Game",
       service: "psycho-mantis",
     },
   },
   Configuration
 );
 
-export type LobbyEntityType = EntityItem<typeof LobbyEntity>;
+export type GameEntityType = EntityItem<typeof GameEntity>;

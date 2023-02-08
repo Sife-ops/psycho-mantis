@@ -2,17 +2,17 @@ import { Configuration } from "../config";
 import { Entity, EntityItem } from "electrodb";
 import { ulid } from "ulid";
 
-export const LobbyEntity = new Entity(
+export const PlayerEntity = new Entity(
   {
     indexes: {
-      channel: {
+      player: {
         pk: {
           field: "pk",
-          composite: ["channelId"],
+          composite: ["playerId"],
         },
         sk: {
           field: "sk",
-          composite: ["lobbyId"],
+          composite: [],
         },
       },
 
@@ -25,28 +25,42 @@ export const LobbyEntity = new Entity(
         },
         sk: {
           field: "gsi1sk",
-          composite: ["lobbyId"],
+          composite: ["gameId"],
         },
       },
 
-      lobby_: {
-        collection: "lobby",
+      game_: {
+        collection: "game",
         index: "gsi2",
         pk: {
           field: "gsi2pk",
-          composite: ["lobbyId"],
+          composite: ["gameId"],
         },
         sk: {
           field: "gsi2sk",
+          composite: ["userId"],
+        },
+      },
+
+      player_: {
+        collection: "player",
+        index: "gsi3",
+        pk: {
+          field: "gsi3pk",
+          composite: ["playerId"],
+        },
+        sk: {
+          field: "gsi3sk",
           composite: [],
         },
       },
     },
 
     attributes: {
-      channelId: {
+      playerId: {
         type: "string",
         required: true,
+        default: () => ulid(),
       },
 
       userId: {
@@ -54,38 +68,25 @@ export const LobbyEntity = new Entity(
         required: true,
       },
 
-      lobbyId: {
+      gameId: {
         type: "string",
         required: true,
-        default: () => ulid(),
       },
 
-      gameTitle: {
+      team: {
         type: "string",
         required: true,
         default: "",
-      },
-
-      started: {
-        type: "boolean",
-        required: true,
-        default: false,
-      },
-
-      active: {
-        type: "boolean",
-        required: true,
-        default: true,
       },
     },
 
     model: {
       version: "1",
-      entity: "Lobby",
+      entity: "Player",
       service: "psycho-mantis",
     },
   },
   Configuration
 );
 
-export type LobbyEntityType = EntityItem<typeof LobbyEntity>;
+export type PlayerEntityType = EntityItem<typeof PlayerEntity>;

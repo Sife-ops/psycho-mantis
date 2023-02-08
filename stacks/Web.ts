@@ -27,6 +27,7 @@ export function Web({ stack }: StackContext) {
     consumer: {
       function: {
         bind: [
+          db.clickTable,
           db.lobbyTable,
           db.userTable,
           param.botToken,

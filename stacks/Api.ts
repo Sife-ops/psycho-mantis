@@ -17,6 +17,7 @@ export function Api({ stack }: StackContext) {
         bind: [
           db.lobbyTable,
           db.userTable,
+          db.clickTable,
           param.botPublicKey,
           param.botToken,
           param.webTokenSecret,

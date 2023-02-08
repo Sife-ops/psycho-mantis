@@ -15,19 +15,6 @@ export const UserEntity = new Entity(
           composite: [],
         },
       },
-
-      // user_: {
-      //   collection: "user",
-      //   index: "gsi1",
-      //   pk: {
-      //     field: "gsi1pk",
-      //     composite: ["userId"],
-      //   },
-      //   sk: {
-      //     field: "gsi1sk",
-      //     composite: [],
-      //   },
-      // },
     },
 
     attributes: {
