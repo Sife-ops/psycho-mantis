@@ -18,9 +18,6 @@ export const create: Command = {
     });
 
     return {
-      response: {
-        content: `<#${thread.id}> has been created`,
-      },
       mutations: [
         ctx.db.lobby.model.entities.LobbyEntity.create({
           channelId: thread.id,
@@ -34,6 +31,9 @@ export const create: Command = {
               userId,
             }).go()
           ),
+        ctx.followUp({
+          content: `<#${thread.id}> has been created`,
+        }),
       ],
     };
   },

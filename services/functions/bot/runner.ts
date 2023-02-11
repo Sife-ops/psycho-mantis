@@ -3,7 +3,6 @@ import { z } from "zod";
 
 type CommandResult = {
   mutations?: Array<Promise<any>>;
-  response?: Record<string, any>;
 };
 
 export type CommandHandler = (ctx: Ctx) => Promise<CommandResult>;

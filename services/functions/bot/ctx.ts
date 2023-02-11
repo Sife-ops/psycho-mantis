@@ -84,7 +84,6 @@ export class Ctx {
     });
   }
 
-  // todo: remove
   followUp(body: Record<string, any>) {
     const { application_id, token } = this.interactionBody;
     return fetchDiscord(`/webhooks/${application_id}/${token}`, {

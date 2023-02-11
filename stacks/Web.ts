@@ -6,7 +6,7 @@ import {
   use,
   StackContext,
   StaticSite,
-  Queue,
+  Function,
 } from "@serverless-stack/resources";
 
 export function Web({ stack }: StackContext) {
@@ -24,28 +24,24 @@ export function Web({ stack }: StackContext) {
     },
   });
 
-  const botQueue = new Queue(stack, "botQueue", {
-    consumer: {
-      function: {
-        bind: [
-          api.webSocketApi,
-          db.clickTable,
-          db.lobbyTable,
-          db.userTable,
-          param.botToken,
-          param.webTokenSecret,
-          site,
-        ],
-        permissions: ["execute-api"],
-        handler: "functions/bot/main.consumer",
-      },
-    },
+  const botLambda = new Function(stack, "botLambda", {
+    bind: [
+      api.webSocketApi,
+      db.clickTable,
+      db.lobbyTable,
+      db.userTable,
+      param.botToken,
+      param.webTokenSecret,
+      site,
+    ],
+    permissions: ["execute-api"],
+    handler: "functions/bot/main.consumer",
   });
 
   api.api.addRoutes(stack, {
     "POST /bot": {
       function: {
-        bind: [botQueue],
+        bind: [botLambda],
         handler: "functions/bot/main.api",
       },
     },
@@ -53,6 +49,6 @@ export function Web({ stack }: StackContext) {
 
   stack.addOutputs({
     SITE: site.url,
-    QUEUE: botQueue.queueUrl,
+    FUNCTION: botLambda.functionName,
   });
 }

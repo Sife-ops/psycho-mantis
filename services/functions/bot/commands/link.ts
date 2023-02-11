@@ -23,16 +23,18 @@ export const link: Command = {
       : StaticSite.site.url;
 
     return {
-      response: {
-        embeds: [
-          {
-            title: "Lobby URL",
-            description: `don't share links`,
-            url: `${baseUrl}/game?jwt=${token}`,
-            // color: 0xff0000,
-          },
-        ],
-      },
+      mutations: [
+        ctx.followUp({
+          embeds: [
+            {
+              title: "Lobby URL",
+              description: `don't share links`,
+              url: `${baseUrl}/game?jwt=${token}`,
+              // color: 0xff0000,
+            },
+          ],
+        }),
+      ],
     };
   },
 };

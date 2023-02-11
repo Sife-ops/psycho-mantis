@@ -1,11 +1,13 @@
 import { Command } from "../runner";
 
 export const foo: Command = {
-  handler: async () => {
+  handler: async (ctx) => {
     return {
-      response: {
-        content: "bar",
-      },
+      mutations: [
+        ctx.followUp({
+          content: "bar",
+        }),
+      ],
     };
   },
 };

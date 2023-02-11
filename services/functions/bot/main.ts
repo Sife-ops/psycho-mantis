@@ -2,9 +2,9 @@ import * as commands from "./commands";
 import nacl from "tweetnacl";
 import { Config } from "@serverless-stack/node/config";
 import { Ctx } from "./ctx";
-import { Queue } from "@serverless-stack/node/queue";
+import { Function } from "@serverless-stack/node/function";
+import { Lambda } from "aws-sdk";
 import { runner } from "@psycho-mantis/bot/runner";
-import { sqs } from "./common";
 
 import {
   APIGatewayProxyEventV2,
@@ -12,14 +12,16 @@ import {
   Handler,
 } from "aws-lambda";
 
+const lambda = new Lambda();
+
 export const api: Handler<
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2<any>
 > = async (event) => {
   try {
-    const body = JSON.parse(event.body!);
+    const interactionBody = JSON.parse(event.body!);
 
-    switch (body.type) {
+    switch (interactionBody.type) {
       case 1: {
         const verified = nacl.sign.detached.verify(
           Buffer.from(event.headers["x-signature-timestamp"]! + event.body),
@@ -38,20 +40,15 @@ export const api: Handler<
       }
 
       case 2: {
-        await sqs
-          .sendMessage({
-            QueueUrl: Queue.botQueue.queueUrl,
-            MessageBody: JSON.stringify({
-              interactionBody: body,
-            }),
+        await lambda
+          .invokeAsync({
+            FunctionName: Function.botLambda.functionName,
+            InvokeArgs: JSON.stringify({ interactionBody }),
           })
           .promise();
 
-        // todo: ephemeral depending on command
-        // const a = new Options({ interactionBody: body });
-
         return {
-          type: 5,
+          type: 5, // deferred
           data: {
             flags: 64,
           },
@@ -71,22 +68,18 @@ export const api: Handler<
 };
 
 export const consumer = async (event: any) => {
-  const messageBody = JSON.parse(event.Records[0].body);
-  const ctx = await Ctx.init(messageBody);
+  const ctx = await Ctx.init(event);
 
   try {
     await Promise.all(ctx.onboardUsers());
 
-    const { response, mutations } = await runner(
+    const { mutations } = await runner(
       commands,
       ctx.options.getCommandName(0),
       ctx
     );
 
-    await Promise.all([
-      ...(mutations ? mutations : []),
-      ...(response ? [ctx.followUp(response)] : []),
-    ]);
+    await Promise.all(mutations || []);
   } catch (e) {
     console.log(e);
     await ctx.followUp({
