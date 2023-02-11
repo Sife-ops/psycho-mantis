@@ -16,12 +16,12 @@ export const ConnectionEntity = new Entity(
         },
       },
 
-      lobby_: {
-        collection: "lobby",
+      room_: {
+        collection: "room",
         index: "gsi1",
         pk: {
           field: "gsi1pk",
-          composite: ["lobbyId"],
+          composite: ["roomId"],
         },
         sk: {
           field: "gsi1sk",
@@ -37,7 +37,7 @@ export const ConnectionEntity = new Entity(
         default: () => ulid(),
       },
 
-      lobbyId: {
+      roomId: {
         type: "string",
         required: true,
       },

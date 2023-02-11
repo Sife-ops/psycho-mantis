@@ -1,5 +1,5 @@
 import * as db_ from "@psycho-mantis/lib/db";
-import * as lobby from "@psycho-mantis/lib/db/lobby";
+import * as room from "@psycho-mantis/lib/db/room";
 import { OptionSchema, onboardUser, fetchDiscord, wsApi } from "./common";
 
 export class Options {
@@ -52,35 +52,35 @@ export class Options {
 export class Ctx {
   db = db_;
   interactionBody;
-  lobbyCollection;
+  roomCollection;
   options;
 
   private constructor(c: {
     interactionBody: any;
-    lobbyCollection?: lobby.LobbyCollection;
+    roomCollection?: room.RoomCollection;
   }) {
     this.interactionBody = c.interactionBody;
-    this.lobbyCollection = c.lobbyCollection;
+    this.roomCollection = c.roomCollection;
     this.options = new Options({ interactionBody: c.interactionBody });
   }
 
   static async init({ interactionBody }: { interactionBody: any }) {
-    const lobbyCollection = await db_.lobby.model.entities.LobbyEntity.query
+    const roomCollection = await db_.room.model.entities.RoomEntity.query
       .channel({ channelId: interactionBody.channel_id })
       // .where(({ active }, { eq }) => eq(active, true))
       .go()
       .then(({ data }) => data[0])
-      .then((lobby) => {
-        if (!lobby) return undefined;
-        return db_.lobby.model.collections
-          .lobby({ lobbyId: lobby.lobbyId })
+      .then((room) => {
+        if (!room) return undefined;
+        return db_.room.model.collections
+          .room({ roomId: room.roomId })
           .go()
           .then((e) => e.data);
       });
 
     return new Ctx({
       interactionBody,
-      lobbyCollection,
+      roomCollection,
     });
   }
 
@@ -114,7 +114,7 @@ export class Ctx {
 
   allMessages(message: any) {
     try {
-      return this.getLobbyCollection().ConnectionEntity.map(
+      return this.getRoomCollection().ConnectionEntity.map(
         ({ connectionId }) => this.messageClient(connectionId, message)
       );
     } catch {
@@ -135,23 +135,23 @@ export class Ctx {
     return this.getUser().id;
   }
 
-  // lobby
-  getLobbyCollection() {
-    if (!this.lobbyCollection) throw new Error("missing lobbyCollection");
-    return this.lobbyCollection;
+  // room
+  getRoomCollection() {
+    if (!this.roomCollection) throw new Error("missing roomCollection");
+    return this.roomCollection;
   }
 
-  hasLobby() {
-    return !!this.lobbyCollection;
+  hasRoom() {
+    return !!this.roomCollection;
   }
 
-  getLobby() {
-    return this.getLobbyCollection().LobbyEntity[0];
+  getRoom() {
+    return this.getRoomCollection().RoomEntity[0];
   }
 
   // player
   getPlayers() {
-    return this.getLobbyCollection().PlayerEntity;
+    return this.getRoomCollection().PlayerEntity;
   }
 
   getResolvedUsers() {

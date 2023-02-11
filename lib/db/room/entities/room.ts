@@ -2,7 +2,7 @@ import { Configuration } from "../config";
 import { Entity, EntityItem } from "electrodb";
 import { ulid } from "ulid";
 
-export const LobbyEntity = new Entity(
+export const RoomEntity = new Entity(
   {
     indexes: {
       channel: {
@@ -12,16 +12,16 @@ export const LobbyEntity = new Entity(
         },
         sk: {
           field: "sk",
-          composite: ["lobbyId"],
+          composite: ["roomId"],
         },
       },
 
-      lobby_: {
-        collection: "lobby",
+      room_: {
+        collection: "room",
         index: "gsi1",
         pk: {
           field: "gsi1pk",
-          composite: ["lobbyId"],
+          composite: ["roomId"],
         },
         sk: {
           field: "gsi1sk",
@@ -38,7 +38,7 @@ export const LobbyEntity = new Entity(
         },
         sk: {
           field: "gsi2sk",
-          composite: ["lobbyId"],
+          composite: ["roomId"],
         },
       },
     },
@@ -49,7 +49,7 @@ export const LobbyEntity = new Entity(
         required: true,
       },
 
-      lobbyId: {
+      roomId: {
         type: "string",
         required: true,
         default: () => ulid(),
@@ -71,21 +71,15 @@ export const LobbyEntity = new Entity(
         required: true,
         default: false,
       },
-
-      active: {
-        type: "boolean",
-        required: true,
-        default: true,
-      },
     },
 
     model: {
       version: "1",
-      entity: "Lobby",
+      entity: "Room",
       service: "psycho-mantis",
     },
   },
   Configuration
 );
 
-export type LobbyEntityType = EntityItem<typeof LobbyEntity>;
+export type RoomEntityType = EntityItem<typeof RoomEntity>;

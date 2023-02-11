@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { useTypedQuery } from "@psycho-mantis/graphql/urql";
 
 export const useGame = () => {
-  const [lobbyQueryRes, lobbyQueryExec] = useTypedQuery({
+  const [roomQueryRes, roomQueryExec] = useTypedQuery({
     query: {
-      lobby: {
+      room: {
         channelId: true,
-        lobbyId: true,
+        roomId: true,
         gameTitle: true,
         started: true,
 
@@ -30,7 +30,7 @@ export const useGame = () => {
 
   const urlParams = new URLSearchParams(window.location.search);
   const jwt = urlParams.get("jwt");
-  const { lobbyId } = decode<{ lobbyId: string }>(jwt!);
+  const { roomId } = decode<{ roomId: string }>(jwt!);
   const [ws, setWs] = useState<Sockette>();
 
   useEffect(() => {
@@ -44,15 +44,15 @@ export const useGame = () => {
         setWs(ws);
         ws.json({
           action: "save-connection",
-          data: { lobbyId },
+          data: { roomId },
         });
       },
       onmessage: (e) => {
         console.log("Received:", e);
         const parsedData = JSON.parse(e.data);
         switch (parsedData.action) {
-          case "update-lobby":
-            lobbyQueryExec({ requestPolicy: "network-only" });
+          case "update-room":
+            roomQueryExec({ requestPolicy: "network-only" });
             break;
           default:
             break;
@@ -76,12 +76,12 @@ export const useGame = () => {
   }, [ws]);
 
   useEffect(() => {
-    if (!lobbyQueryRes.fetching && lobbyQueryRes.data) {
-      console.log(lobbyQueryRes);
+    if (!roomQueryRes.fetching && roomQueryRes.data) {
+      console.log(roomQueryRes);
     }
-  }, [lobbyQueryRes]);
+  }, [roomQueryRes]);
 
   return {
-    lobbyQueryRes,
+    roomQueryRes,
   };
 };

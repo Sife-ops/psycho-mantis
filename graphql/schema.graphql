@@ -1,27 +1,27 @@
-type Lobby {
-  channelId: ID!
-  gameTitle: String!
-  lobbyId: String!
-  players: [LobbyPlayer!]!
-  started: Boolean!
-}
-
-type LobbyPlayer {
-  isGm: Boolean!
-  lobbyId: String!
-  playerId: String!
-  team: String!
-  user: User!
-  userId: ID!
-}
-
 type Mutation {
   mello: String!
 }
 
 type Query {
   hello: String!
-  lobby: Lobby!
+  room: Room!
+}
+
+type Room {
+  channelId: ID!
+  gameTitle: String!
+  players: [RoomPlayer!]!
+  roomId: String!
+  started: Boolean!
+}
+
+type RoomPlayer {
+  isGm: Boolean!
+  playerId: String!
+  roomId: String!
+  team: String!
+  user: User!
+  userId: ID!
 }
 
 type User {

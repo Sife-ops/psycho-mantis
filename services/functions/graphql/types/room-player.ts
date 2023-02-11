@@ -1,15 +1,15 @@
-import * as lobby from "@psycho-mantis/lib/db/lobby/entities";
+import * as room from "@psycho-mantis/lib/db/room/entities";
 import { UserType } from "./user";
 import { builder } from "../builder";
 
-export const LobbyPlayerType = builder.objectRef<lobby.PlayerEntityType>(
-  "LobbyPlayer"
+export const RoomPlayerType = builder.objectRef<room.PlayerEntityType>(
+  "RoomPlayer"
 );
-LobbyPlayerType.implement({
+RoomPlayerType.implement({
   fields: (t) => ({
     userId: t.exposeID("userId"),
     playerId: t.exposeString("playerId"),
-    lobbyId: t.exposeString("lobbyId"),
+    roomId: t.exposeString("roomId"),
     team: t.exposeString("team"),
 
     isGm: t.boolean({

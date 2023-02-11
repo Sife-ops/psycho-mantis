@@ -25,16 +25,16 @@ export const PlayerEntity = new Entity(
         },
         sk: {
           field: "gsi1sk",
-          composite: ["lobbyId"],
+          composite: ["roomId"],
         },
       },
 
-      lobby_: {
-        collection: "lobby",
+      room_: {
+        collection: "room",
         index: "gsi2",
         pk: {
           field: "gsi2pk",
-          composite: ["lobbyId"],
+          composite: ["roomId"],
         },
         sk: {
           field: "gsi2sk",
@@ -68,7 +68,7 @@ export const PlayerEntity = new Entity(
         required: true,
       },
 
-      lobbyId: {
+      roomId: {
         type: "string",
         required: true,
       },

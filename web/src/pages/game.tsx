@@ -5,7 +5,7 @@ export default function Game() {
 
   return (
     <div>
-      <div>{JSON.stringify(game.lobbyQueryRes.data)}</div>
+      <div>{JSON.stringify(game.roomQueryRes.data)}</div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import * as db from "@psycho-mantis/lib/db";
 import AWS from "aws-sdk";
 import fetch, { RequestInit, Response } from "node-fetch";
 import { Config } from "@serverless-stack/node/config";
+import { Lambda } from "aws-sdk";
 import { UserEntityType } from "@psycho-mantis/lib/db/user/user";
 import { WebSocketApi } from "@serverless-stack/node/api";
 import { z } from "zod";
@@ -10,6 +11,7 @@ import { z } from "zod";
  * aws
  */
 
+export const lambda = new Lambda();
 export const sqs = new AWS.SQS();
 export const wsApi = new AWS.ApiGatewayManagementApi({
   endpoint: WebSocketApi.webSocketApi.url.split("wss://")[1],

@@ -13,21 +13,21 @@ export const create: Command = {
 
     await fetchDiscord(`/channels/${thread.id}/messages`, {
       body: {
-        content: `<@${userId}> created the lobby. Message \`/link\` for URL.`,
+        content: `<@${userId}> created the room. Message \`/link\` for URL.`,
       },
     });
 
     return {
       mutations: [
-        ctx.db.lobby.model.entities.LobbyEntity.create({
+        ctx.db.room.model.entities.RoomEntity.create({
           channelId: thread.id,
           userId,
         })
           .go()
           .then((e) => e.data)
-          .then(({ lobbyId }) =>
-            ctx.db.lobby.model.entities.PlayerEntity.create({
-              lobbyId,
+          .then(({ roomId }) =>
+            ctx.db.room.model.entities.PlayerEntity.create({
+              roomId,
               userId,
             }).go()
           ),

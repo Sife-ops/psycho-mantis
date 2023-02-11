@@ -3,18 +3,18 @@ import { Service } from "electrodb";
 
 export type Model = {
   ConnectionEntity: typeof Entity.ConnectionEntity;
-  LobbyEntity: typeof Entity.LobbyEntity;
+  RoomEntity: typeof Entity.RoomEntity;
   PlayerEntity: typeof Entity.PlayerEntity;
 };
 
 export const model = new Service<Model>({
   ConnectionEntity: Entity.ConnectionEntity,
-  LobbyEntity: Entity.LobbyEntity,
+  RoomEntity: Entity.RoomEntity,
   PlayerEntity: Entity.PlayerEntity,
 });
 
-export interface LobbyCollection {
+export interface RoomCollection {
   ConnectionEntity: Entity.ConnectionEntityType[];
-  LobbyEntity: Entity.LobbyEntityType[];
+  RoomEntity: Entity.RoomEntityType[];
   PlayerEntity: Entity.PlayerEntityType[];
 }

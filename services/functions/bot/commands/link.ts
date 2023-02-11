@@ -5,16 +5,16 @@ import { Command } from "../runner";
 
 export const link: Command = {
   handler: async (ctx) => {
-    if (!ctx.hasLobby()) {
+    if (!ctx.hasRoom()) {
       return {
         response: {
-          content: "lobby not found",
+          content: "room not found",
         },
       };
     }
 
     const token = sign(
-      { userId: ctx.getUserId(), lobbyId: ctx.getLobby().lobbyId },
+      { userId: ctx.getUserId(), roomId: ctx.getRoom().roomId },
       Config.WEB_TOKEN_SECRET
     );
 
@@ -27,7 +27,7 @@ export const link: Command = {
         ctx.followUp({
           embeds: [
             {
-              title: "Lobby URL",
+              title: "Room URL",
               description: `don't share links`,
               url: `${baseUrl}/game?jwt=${token}`,
               // color: 0xff0000,

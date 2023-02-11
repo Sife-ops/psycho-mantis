@@ -3,7 +3,7 @@ import nacl from "tweetnacl";
 import { Config } from "@serverless-stack/node/config";
 import { Ctx } from "./ctx";
 import { Function } from "@serverless-stack/node/function";
-import { Lambda } from "aws-sdk";
+import { lambda } from "./common";
 import { runner } from "@psycho-mantis/bot/runner";
 
 import {
@@ -11,8 +11,6 @@ import {
   APIGatewayProxyResultV2,
   Handler,
 } from "aws-lambda";
-
-const lambda = new Lambda();
 
 export const api: Handler<
   APIGatewayProxyEventV2,
@@ -56,7 +54,9 @@ export const api: Handler<
       }
 
       default: {
-        throw new Error("unknown request type");
+        throw new Error(
+          `unsupported interaction type: ${interactionBody.type}`
+        );
       }
     }
   } catch (e) {

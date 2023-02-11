@@ -12,7 +12,7 @@ export function Database({ stack }: StackContext) {
     },
   });
 
-  const lobbyTable = new Table(stack, "lobby-db", {
+  const roomTable = new Table(stack, "room-db", {
     fields: {
       pk: "string",
       sk: "string",
@@ -100,7 +100,7 @@ export function Database({ stack }: StackContext) {
 
   return {
     clickTable,
-    lobbyTable,
+    roomTable,
     userTable,
   };
 }

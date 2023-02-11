@@ -17,7 +17,7 @@ export const connect: APIGatewayProxyHandlerV2 = async (event) => {
 export const disconnect: APIGatewayProxyHandler = async (event) => {
   console.log("disconnect");
 
-  await db.lobby.model.entities.ConnectionEntity.delete({
+  await db.room.model.entities.ConnectionEntity.delete({
     connectionId: event.requestContext.connectionId!,
   }).go();
 
@@ -31,9 +31,9 @@ export const default_: APIGatewayProxyHandler = async (event) => {
   switch (parsedBody.action) {
     case "save-connection": {
       // todo: delete current connection?
-      await db.lobby.model.entities.ConnectionEntity.create({
+      await db.room.model.entities.ConnectionEntity.create({
         connectionId: event.requestContext.connectionId!,
-        lobbyId: parsedBody.data.lobbyId,
+        roomId: parsedBody.data.roomId,
       }).go();
 
       return fn("connection saved");

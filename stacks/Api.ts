@@ -15,7 +15,7 @@ export function Api({ stack }: StackContext) {
   const webSocketApi = new WebSocketApi(stack, "webSocketApi", {
     defaults: {
       function: {
-        bind: [db.lobbyTable, db.userTable, db.clickTable],
+        bind: [db.roomTable, db.userTable, db.clickTable],
       },
     },
     routes: {
@@ -29,9 +29,9 @@ export function Api({ stack }: StackContext) {
     defaults: {
       function: {
         bind: [
-          db.lobbyTable,
-          db.userTable,
           db.clickTable,
+          db.roomTable,
+          db.userTable,
           param.botPublicKey,
           param.botToken,
           param.webTokenSecret,

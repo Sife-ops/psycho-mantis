@@ -1,2 +1,2 @@
 import "./hello";
-import "./lobby";
+import "./room";

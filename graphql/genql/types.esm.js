@@ -1,90 +1,90 @@
 export default {
     "scalars": [
         1,
-        2,
-        3
+        4,
+        5
     ],
     "types": {
-        "Lobby": {
-            "channelId": [
+        "Mutation": {
+            "mello": [
                 1
             ],
-            "gameTitle": [
-                2
+            "__typename": [
+                1
+            ]
+        },
+        "String": {},
+        "Query": {
+            "hello": [
+                1
             ],
-            "lobbyId": [
-                2
-            ],
-            "players": [
-                4
-            ],
-            "started": [
+            "room": [
                 3
             ],
             "__typename": [
-                2
+                1
+            ]
+        },
+        "Room": {
+            "channelId": [
+                4
+            ],
+            "gameTitle": [
+                1
+            ],
+            "players": [
+                6
+            ],
+            "roomId": [
+                1
+            ],
+            "started": [
+                5
+            ],
+            "__typename": [
+                1
             ]
         },
         "ID": {},
-        "String": {},
         "Boolean": {},
-        "LobbyPlayer": {
+        "RoomPlayer": {
             "isGm": [
-                3
-            ],
-            "lobbyId": [
-                2
+                5
             ],
             "playerId": [
-                2
+                1
+            ],
+            "roomId": [
+                1
             ],
             "team": [
-                2
+                1
             ],
             "user": [
                 7
             ],
             "userId": [
+                4
+            ],
+            "__typename": [
                 1
-            ],
-            "__typename": [
-                2
-            ]
-        },
-        "Mutation": {
-            "mello": [
-                2
-            ],
-            "__typename": [
-                2
-            ]
-        },
-        "Query": {
-            "hello": [
-                2
-            ],
-            "lobby": [
-                0
-            ],
-            "__typename": [
-                2
             ]
         },
         "User": {
             "avatar": [
-                2
-            ],
-            "discriminator": [
-                2
-            ],
-            "userId": [
                 1
             ],
+            "discriminator": [
+                1
+            ],
+            "userId": [
+                4
+            ],
             "username": [
-                2
+                1
             ],
             "__typename": [
-                2
+                1
             ]
         }
     }

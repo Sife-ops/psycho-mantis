@@ -15,14 +15,14 @@ export const add: Command = {
 
     const { application_id, token } = ctx.interactionBody;
 
-    await ctx.db.lobby.model.entities.PlayerEntity.create({
-      lobbyId: ctx.getLobby().lobbyId,
+    await ctx.db.room.model.entities.PlayerEntity.create({
+      roomId: ctx.getRoom().roomId,
       userId,
     }).go();
 
     return {
       mutations: [
-        ...ctx.allMessages({ action: "update-lobby" }),
+        ...ctx.allMessages({ action: "update-room" }),
 
         fetchDiscord(
           `/webhooks/${application_id}/${token}/messages/@original`,
@@ -31,7 +31,7 @@ export const add: Command = {
 
         fetchDiscord(`/channels/${ctx.getChannelId()}/messages`, {
           body: {
-            content: `<@${userId}> added to lobby`,
+            content: `<@${userId}> added to room`,
           },
         }),
       ],

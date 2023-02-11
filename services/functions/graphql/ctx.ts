@@ -4,7 +4,7 @@ import { APIGatewayProxyEventV2, Context } from "aws-lambda";
 import { Config } from "@serverless-stack/node/config";
 import { ExecutionContext } from "graphql-helix";
 import { JwtPayload, verify } from "jsonwebtoken";
-import { LobbyCollection } from "@psycho-mantis/lib/db/lobby";
+import { RoomCollection } from "@psycho-mantis/lib/db/room";
 import { UserEntityType } from "@psycho-mantis/lib/db/user/user";
 
 interface Request {
@@ -15,27 +15,27 @@ interface Request {
 
 interface Payload extends JwtPayload {
   userId: string;
-  lobbyId: string;
+  roomId: string;
 }
 
 export class Ctx {
   db = db_;
   game;
   jwtPayload;
-  lobbyCollection;
+  roomCollection;
   request;
   users;
 
   private constructor(c: {
     game?: Game;
-    lobbyCollection: LobbyCollection;
+    roomCollection: RoomCollection;
     request: Request;
     users: UserEntityType[];
     jwtPayload: Payload;
   }) {
     this.game = c.game;
     this.jwtPayload = c.jwtPayload;
-    this.lobbyCollection = c.lobbyCollection;
+    this.roomCollection = c.roomCollection;
     this.request = c.request;
     this.users = c.users;
   }
@@ -52,14 +52,14 @@ export class Ctx {
       throw new Error("failed to verify token");
     }
 
-    const lobbyCollection = await db_.lobby.model.collections
-      .lobby({ lobbyId: jwtPayload.lobbyId })
+    const roomCollection = await db_.room.model.collections
+      .room({ roomId: jwtPayload.roomId })
       .go()
       .then((e) => e.data);
-    if (!lobbyCollection) throw new Error("missing lobbyCollection");
+    if (!roomCollection) throw new Error("missing roomCollection");
 
     const users = await Promise.all(
-      lobbyCollection.PlayerEntity.map((player) =>
+      roomCollection.PlayerEntity.map((player) =>
         db_.user.model.entities.UserEntity.get({
           userId: player.userId,
         })
@@ -69,27 +69,27 @@ export class Ctx {
       )
     );
 
-    const { gameTitle } = lobbyCollection.LobbyEntity[0];
+    const { gameTitle } = roomCollection.RoomEntity[0];
     let game: Game | undefined;
     if (gameTitle) {
-      game = await Game.init({ gameTitle, lobbyId: jwtPayload.lobbyId });
+      game = await Game.init({ gameTitle, roomId: jwtPayload.roomId });
     }
 
     return new Ctx({
       game,
       jwtPayload,
-      lobbyCollection,
+      roomCollection,
       request: c.request,
       users,
     });
   }
 
-  getLobby() {
-    return this.lobbyCollection.LobbyEntity[0];
+  getRoom() {
+    return this.roomCollection.RoomEntity[0];
   }
 
-  getLobbyPlayers() {
-    return this.lobbyCollection.PlayerEntity;
+  getRoomPlayers() {
+    return this.roomCollection.PlayerEntity;
   }
 
   getViewer(): UserEntityType {
@@ -97,7 +97,7 @@ export class Ctx {
   }
 
   getGm(): UserEntityType {
-    return this.users.find((e) => e.userId === this.getLobby().userId)!;
+    return this.users.find((e) => e.userId === this.getRoom().userId)!;
   }
 
   isViewerGm(): boolean {
@@ -120,11 +120,11 @@ class Game {
     this.clickCollection = c.clickCollection;
   }
 
-  static async init(c: { gameTitle: string; lobbyId: string }) {
+  static async init(c: { gameTitle: string; roomId: string }) {
     switch (c.gameTitle) {
       case "Click": {
         const clickCollection = await db_.click.model.collections
-          .lobby({ lobbyId: c.lobbyId })
+          .room({ roomId: c.roomId })
           .go()
           .then((e) => e.data);
         return new Game({ clickCollection });

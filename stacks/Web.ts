@@ -28,7 +28,7 @@ export function Web({ stack }: StackContext) {
     bind: [
       api.webSocketApi,
       db.clickTable,
-      db.lobbyTable,
+      db.roomTable,
       db.userTable,
       param.botToken,
       param.webTokenSecret,

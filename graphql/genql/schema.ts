@@ -1,28 +1,9 @@
 import {FieldsSelection,Observable} from '@genql/runtime'
 
 export type Scalars = {
-    ID: string,
     String: string,
+    ID: string,
     Boolean: boolean,
-}
-
-export interface Lobby {
-    channelId: Scalars['ID']
-    gameTitle: Scalars['String']
-    lobbyId: Scalars['String']
-    players: LobbyPlayer[]
-    started: Scalars['Boolean']
-    __typename: 'Lobby'
-}
-
-export interface LobbyPlayer {
-    isGm: Scalars['Boolean']
-    lobbyId: Scalars['String']
-    playerId: Scalars['String']
-    team: Scalars['String']
-    user: User
-    userId: Scalars['ID']
-    __typename: 'LobbyPlayer'
 }
 
 export interface Mutation {
@@ -32,8 +13,27 @@ export interface Mutation {
 
 export interface Query {
     hello: Scalars['String']
-    lobby: Lobby
+    room: Room
     __typename: 'Query'
+}
+
+export interface Room {
+    channelId: Scalars['ID']
+    gameTitle: Scalars['String']
+    players: RoomPlayer[]
+    roomId: Scalars['String']
+    started: Scalars['Boolean']
+    __typename: 'Room'
+}
+
+export interface RoomPlayer {
+    isGm: Scalars['Boolean']
+    playerId: Scalars['String']
+    roomId: Scalars['String']
+    team: Scalars['String']
+    user: User
+    userId: Scalars['ID']
+    __typename: 'RoomPlayer'
 }
 
 export interface User {
@@ -44,27 +44,6 @@ export interface User {
     __typename: 'User'
 }
 
-export interface LobbyRequest{
-    channelId?: boolean | number
-    gameTitle?: boolean | number
-    lobbyId?: boolean | number
-    players?: LobbyPlayerRequest
-    started?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
-export interface LobbyPlayerRequest{
-    isGm?: boolean | number
-    lobbyId?: boolean | number
-    playerId?: boolean | number
-    team?: boolean | number
-    user?: UserRequest
-    userId?: boolean | number
-    __typename?: boolean | number
-    __scalar?: boolean | number
-}
-
 export interface MutationRequest{
     mello?: boolean | number
     __typename?: boolean | number
@@ -73,7 +52,28 @@ export interface MutationRequest{
 
 export interface QueryRequest{
     hello?: boolean | number
-    lobby?: LobbyRequest
+    room?: RoomRequest
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+export interface RoomRequest{
+    channelId?: boolean | number
+    gameTitle?: boolean | number
+    players?: RoomPlayerRequest
+    roomId?: boolean | number
+    started?: boolean | number
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+export interface RoomPlayerRequest{
+    isGm?: boolean | number
+    playerId?: boolean | number
+    roomId?: boolean | number
+    team?: boolean | number
+    user?: UserRequest
+    userId?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -86,22 +86,6 @@ export interface UserRequest{
     __typename?: boolean | number
     __scalar?: boolean | number
 }
-
-
-const Lobby_possibleTypes: string[] = ['Lobby']
-export const isLobby = (obj?: { __typename?: any } | null): obj is Lobby => {
-  if (!obj?.__typename) throw new Error('__typename is missing in "isLobby"')
-  return Lobby_possibleTypes.includes(obj.__typename)
-}
-
-
-
-const LobbyPlayer_possibleTypes: string[] = ['LobbyPlayer']
-export const isLobbyPlayer = (obj?: { __typename?: any } | null): obj is LobbyPlayer => {
-  if (!obj?.__typename) throw new Error('__typename is missing in "isLobbyPlayer"')
-  return LobbyPlayer_possibleTypes.includes(obj.__typename)
-}
-
 
 
 const Mutation_possibleTypes: string[] = ['Mutation']
@@ -120,46 +104,28 @@ export const isQuery = (obj?: { __typename?: any } | null): obj is Query => {
 
 
 
+const Room_possibleTypes: string[] = ['Room']
+export const isRoom = (obj?: { __typename?: any } | null): obj is Room => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isRoom"')
+  return Room_possibleTypes.includes(obj.__typename)
+}
+
+
+
+const RoomPlayer_possibleTypes: string[] = ['RoomPlayer']
+export const isRoomPlayer = (obj?: { __typename?: any } | null): obj is RoomPlayer => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isRoomPlayer"')
+  return RoomPlayer_possibleTypes.includes(obj.__typename)
+}
+
+
+
 const User_possibleTypes: string[] = ['User']
 export const isUser = (obj?: { __typename?: any } | null): obj is User => {
   if (!obj?.__typename) throw new Error('__typename is missing in "isUser"')
   return User_possibleTypes.includes(obj.__typename)
 }
 
-
-export interface LobbyPromiseChain{
-    channelId: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Promise<Scalars['ID']>}),
-    gameTitle: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
-    lobbyId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
-    players: ({get: <R extends LobbyPlayerRequest>(request: R, defaultValue?: FieldsSelection<LobbyPlayer, R>[]) => Promise<FieldsSelection<LobbyPlayer, R>[]>}),
-    started: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Promise<Scalars['Boolean']>})
-}
-
-export interface LobbyObservableChain{
-    channelId: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Observable<Scalars['ID']>}),
-    gameTitle: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
-    lobbyId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
-    players: ({get: <R extends LobbyPlayerRequest>(request: R, defaultValue?: FieldsSelection<LobbyPlayer, R>[]) => Observable<FieldsSelection<LobbyPlayer, R>[]>}),
-    started: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Observable<Scalars['Boolean']>})
-}
-
-export interface LobbyPlayerPromiseChain{
-    isGm: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Promise<Scalars['Boolean']>}),
-    lobbyId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
-    playerId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
-    team: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
-    user: (UserPromiseChain & {get: <R extends UserRequest>(request: R, defaultValue?: FieldsSelection<User, R>) => Promise<FieldsSelection<User, R>>}),
-    userId: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Promise<Scalars['ID']>})
-}
-
-export interface LobbyPlayerObservableChain{
-    isGm: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Observable<Scalars['Boolean']>}),
-    lobbyId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
-    playerId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
-    team: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
-    user: (UserObservableChain & {get: <R extends UserRequest>(request: R, defaultValue?: FieldsSelection<User, R>) => Observable<FieldsSelection<User, R>>}),
-    userId: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Observable<Scalars['ID']>})
-}
 
 export interface MutationPromiseChain{
     mello: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>})
@@ -171,12 +137,46 @@ export interface MutationObservableChain{
 
 export interface QueryPromiseChain{
     hello: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
-    lobby: (LobbyPromiseChain & {get: <R extends LobbyRequest>(request: R, defaultValue?: FieldsSelection<Lobby, R>) => Promise<FieldsSelection<Lobby, R>>})
+    room: (RoomPromiseChain & {get: <R extends RoomRequest>(request: R, defaultValue?: FieldsSelection<Room, R>) => Promise<FieldsSelection<Room, R>>})
 }
 
 export interface QueryObservableChain{
     hello: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
-    lobby: (LobbyObservableChain & {get: <R extends LobbyRequest>(request: R, defaultValue?: FieldsSelection<Lobby, R>) => Observable<FieldsSelection<Lobby, R>>})
+    room: (RoomObservableChain & {get: <R extends RoomRequest>(request: R, defaultValue?: FieldsSelection<Room, R>) => Observable<FieldsSelection<Room, R>>})
+}
+
+export interface RoomPromiseChain{
+    channelId: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Promise<Scalars['ID']>}),
+    gameTitle: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
+    players: ({get: <R extends RoomPlayerRequest>(request: R, defaultValue?: FieldsSelection<RoomPlayer, R>[]) => Promise<FieldsSelection<RoomPlayer, R>[]>}),
+    roomId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
+    started: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Promise<Scalars['Boolean']>})
+}
+
+export interface RoomObservableChain{
+    channelId: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Observable<Scalars['ID']>}),
+    gameTitle: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
+    players: ({get: <R extends RoomPlayerRequest>(request: R, defaultValue?: FieldsSelection<RoomPlayer, R>[]) => Observable<FieldsSelection<RoomPlayer, R>[]>}),
+    roomId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
+    started: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Observable<Scalars['Boolean']>})
+}
+
+export interface RoomPlayerPromiseChain{
+    isGm: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Promise<Scalars['Boolean']>}),
+    playerId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
+    roomId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
+    team: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
+    user: (UserPromiseChain & {get: <R extends UserRequest>(request: R, defaultValue?: FieldsSelection<User, R>) => Promise<FieldsSelection<User, R>>}),
+    userId: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Promise<Scalars['ID']>})
+}
+
+export interface RoomPlayerObservableChain{
+    isGm: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Observable<Scalars['Boolean']>}),
+    playerId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
+    roomId: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
+    team: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
+    user: (UserObservableChain & {get: <R extends UserRequest>(request: R, defaultValue?: FieldsSelection<User, R>) => Observable<FieldsSelection<User, R>>}),
+    userId: ({get: (request?: boolean|number, defaultValue?: Scalars['ID']) => Observable<Scalars['ID']>})
 }
 
 export interface UserPromiseChain{
