@@ -2,6 +2,7 @@ import Sockette from "sockette";
 import decode from "jwt-decode";
 import { useEffect, useState } from "react";
 import { useTypedQuery } from "@psycho-mantis/graphql/urql";
+import { RoomPlayer, User } from "@psycho-mantis/graphql/genql";
 
 export const useGame = () => {
   const [roomQueryRes, roomQueryExec] = useTypedQuery({
@@ -28,14 +29,22 @@ export const useGame = () => {
     },
   });
 
+  const [roomPlayer, setRoomPlayer] = useState<RoomPlayer[]>();
+
+  useEffect(() => {
+    const { fetching, data } = roomQueryRes;
+    if (!fetching && data) {
+      console.log(roomQueryRes);
+      setRoomPlayer(data.room.players as RoomPlayer[]);
+    }
+  }, [roomQueryRes]);
+
   const urlParams = new URLSearchParams(window.location.search);
   const jwt = urlParams.get("jwt");
   const { roomId } = decode<{ roomId: string }>(jwt!);
   const [ws, setWs] = useState<Sockette>();
 
   useEffect(() => {
-    console.log(import.meta.env.VITE_API_URL);
-
     const ws = new Sockette(import.meta.env.VITE_WS_API_URL, {
       timeout: 5e3,
       maxAttempts: 10,
@@ -75,13 +84,8 @@ export const useGame = () => {
     }
   }, [ws]);
 
-  useEffect(() => {
-    if (!roomQueryRes.fetching && roomQueryRes.data) {
-      console.log(roomQueryRes);
-    }
-  }, [roomQueryRes]);
-
   return {
     roomQueryRes,
+    roomPlayer,
   };
 };
